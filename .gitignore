@@ -6,3 +6,8 @@ build
 
 data/
 
+.idea
+.ipynb_checkpoints
+.vscode
+Untitled.ipynb
+bin/
