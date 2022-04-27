@@ -19,8 +19,7 @@ public class TurnstileRecord {
   private final String station;
   private final String lineName;
   private final String division;
-  private final LocalDate date;
-  private final LocalTime time;
+  private final LocalDateTime timestamp;
   private final String description;
   private final long entries;
   private final long exits;
@@ -32,8 +31,7 @@ public class TurnstileRecord {
       String station,
       String lineName,
       String division,
-      LocalDate date,
-      LocalTime time,
+      LocalDateTime timestamp,
       String description,
       long entries,
       long exits) {
@@ -43,26 +41,26 @@ public class TurnstileRecord {
     this.station = station;
     this.lineName = lineName;
     this.division = division;
-    this.date = date;
-    this.time = time;
+    this.timestamp = timestamp;
     this.description = description;
     this.entries = entries;
     this.exits = exits;
   }
 
-  /**
-   * Combine the {@link TurnstileRecord#date} and {@link TurnstileRecord#time} fields to a single {@link LocalDateTime}
-   */
-  public LocalDateTime getTime() {
-    throw new NotImplementedException();
+  public LocalDateTime getTimestamp() {
+    return timestamp;
   }
 
   public Key getKey() {
-    return Key.create(controlArea, unit, scp);
+    return Key.create(controlArea, unit, scp, station, lineName, division);
   }
 
-  public Station getStation() {
-    return Station.create(station, lineName);
+  public long getEntries() {
+    return entries;
+  }
+
+  public long getExits() {
+    return exits;
   }
 
   @AutoValue
@@ -70,9 +68,10 @@ public class TurnstileRecord {
     abstract String controlArea();
     abstract String unit();
     abstract String scp();
+    abstract Station station();
 
-    static Key create(String controlArea, String unit, String scp) {
-      return new AutoValue_TurnstileRecord_Key(controlArea, unit, scp);
+    static Key create(String controlArea, String unit, String scp, String station, String lines, String division) {
+      return new AutoValue_TurnstileRecord_Key(controlArea, unit, scp, Station.create(station, lines, division));
     }
   }
 
@@ -90,12 +89,11 @@ public class TurnstileRecord {
     public static String EXITS = "EXITS";
   }
 
-  public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-  public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+  public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
 
   public static TurnstileRecord parse(CSVRecord record) {
-    LocalDate date = LocalDate.parse(record.get(DATE), DATE_FORMATTER);
-    LocalTime time = LocalTime.parse(record.get(TIME), TIME_FORMATTER);
+    String timestampString = record.get(DATE) + " " + record.get(TIME);
+    LocalDateTime timestamp = LocalDateTime.parse(timestampString, DATE_FORMATTER);
     return new TurnstileRecord(
         record.get(CONTROL_AREA),
         record.get(UNIT),
@@ -103,8 +101,7 @@ public class TurnstileRecord {
         record.get(STATION),
         record.get(LINE_NAME),
         record.get(DIVISION),
-        date,
-        time,
+        timestamp,
         record.get(DESCRIPTION),
         convertToLong(record.get(ENTRIES)),
         convertToLong(record.get(EXITS)));

@@ -18,11 +18,21 @@ dependencies {
   annotationProcessor("com.google.auto.value:auto-value:1.9")
   // https://mvnrepository.com/artifact/com.google.auto.value/auto-value-annotations
   implementation("com.google.auto.value:auto-value-annotations:1.9")
+// https://mvnrepository.com/artifact/com.google.guava/guava
+  implementation("com.google.guava:guava:31.1-jre")
 
 
   implementation("info.picocli:picocli:4.6.3")
-  implementation("org.junit.jupiter:junit-jupiter:5.8.2")
   annotationProcessor("info.picocli:picocli-codegen:4.6.3")
+
+  testImplementation(platform("org.junit:junit-bom:5.8.2"))
+  testImplementation("org.junit.jupiter:junit-jupiter-api")
+  testImplementation("org.assertj:assertj-core:3.22.0")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+tasks.test {
+  useJUnitPlatform()
 }
 
 val dataDir = project.projectDir.resolve("data").toString()
