@@ -44,3 +44,28 @@ val downloadTask by tasks.registering(JavaExec::class) {
 
   args = listOf("download", "--output-dir", dataDir)
 }
+
+tasks.register<Zip>("packageAssignment") {
+  archiveFileName.set("${project.name}-$YOUR_NAME.zip")
+  from(layout.projectDirectory) {
+    include("*.gradle.kts")
+    include("src/**")
+    include("gradle/**")
+    include("gradlew")
+  }
+
+  outputs.upToDateWhen { false }
+
+  finalizedBy(tasks.getByPath("copyZip"))
+}
+
+tasks.register<Copy>("copyZip") {
+  from(tasks.getByName<Zip>("packageAssignment").outputs)
+
+  destinationDir = File(rootProject.projectDir.toString())
+}
+
+tasks.register<JavaExec>("source2pdf") {
+  classpath = files("${rootProject.projectDir}/source2pdf-all.jar")
+  args = listOf("src", "-o", "${rootProject.projectDir}/$YOUR_NAME.pdf")
+}

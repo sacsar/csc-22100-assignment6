@@ -48,6 +48,8 @@ add some data for those if you want better tests. (Since your code should filter
 **Remember loops are banned.** That said, you can call `collect` on your streams as much as you'd like. There's no
 need to have deeply nested collectors in the name of efficiency.
 
+**What to Submit:** Same as usual--the zip from `packageAssignment` plus a PDF of your code.
+
 | Item                                                  | Points |
 |-------------------------------------------------------|--------|
 | Code compiles                                         | 1      |
