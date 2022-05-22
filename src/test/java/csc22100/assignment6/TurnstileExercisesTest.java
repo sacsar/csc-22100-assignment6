@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -13,7 +14,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class TurnstileExercisesTest implements WithAssertions {
-  private static final Path sampleData = Paths.get(Resources.getResource("sample.csv").getPath());
+  private static final Path sampleData;
+  
+  static {
+    try {
+      sampleData = Paths.get(Resources.getResource("sample.csv").toURI());
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e); 
+    }
+  }
+  
   private static final Station FIFTY_THIRD = Station.create("53 ST", "R", "BMT");
   private static final Station SEVENTY_SECOND = Station.create("72 ST", "123", "IRT");
 
