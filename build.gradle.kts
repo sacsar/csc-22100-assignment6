@@ -33,6 +33,9 @@ dependencies {
 
 tasks.test {
   useJUnitPlatform()
+  testLogging {
+    showStandardStreams=true
+  }
 }
 
 val dataDir = project.projectDir.resolve("data").toString()

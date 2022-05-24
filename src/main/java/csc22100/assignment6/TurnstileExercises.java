@@ -1,11 +1,14 @@
 package csc22100.assignment6;
 
+import com.google.common.collect.Streams;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TurnstileExercises {
@@ -72,12 +75,12 @@ public class TurnstileExercises {
    * You may ignore all functions below this point. They were things I found helpful to implement. *
    *************************************************************************************************/
 
-  private static Map<TurnstileRecord.Key, List<TurnstileCount>> aggregateByTurnstile(
+   public static Map<TurnstileRecord.Key, List<TurnstileCount>> aggregateByTurnstile(
       Stream<TurnstileRecord> records) {
     throw new NotImplementedException();
   }
 
-  private static Stream<StationCount> aggregateByStation(Stream<TurnstileRecord> records) {
+  public static Stream<StationCount> aggregateByStation(Stream<TurnstileRecord> records) {
     throw new NotImplementedException();
   }
 

@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 class TurnstileExercisesTest implements WithAssertions {
@@ -73,5 +74,31 @@ class TurnstileExercisesTest implements WithAssertions {
                 3355,
                 2978));
     assertThat(dayCounts).containsExactly(expected);
+  }
+
+  /**
+   * C230,R233,00-03-00,53 ST,R,BMT,04/15/2022,00:00:00,REGULAR,0000000100,0000000010
+   * C230,R233,00-03-00,53 ST,R,BMT,04/15/2022,04:00:00,REGULAR,0000000120,0000000025
+   * C230,R233,00-03-00,53 ST,R,BMT,04/15/2022,08:00:00,REGULAR,0000000124,0000000045
+   * C230,R233,00-03-00,53 ST,R,BMT,04/15/2022,12:00:00,REGULAR,0000000245,0000000123
+   * C230,R233,00-03-00,53 ST,R,BMT,04/15/2022,16:00:00,REGULAR,0000001467,0000000589
+   * C230,R233,00-03-00,53 ST,R,BMT,04/15/2022,20:00:00,REGULAR,0000002000,0000000789
+   * C230,R233,00-03-00,53 ST,R,BMT,04/16/2022,00:00:00,REGULAR,0000002200,0000001000
+   */
+  @Test
+  public void testAggregateByTurnstile() {
+    Map<TurnstileRecord.Key, List<TurnstileCount>> byTurnstile = TurnstileExercises.aggregateByTurnstile(records.stream());
+    TurnstileRecord.Key key = TurnstileRecord.Key.create("C230", "R233", "00-03-00", "53 ST", "R", "BMT");
+
+    List<TurnstileCount> expected = List.of(
+            TurnstileCount.create(key, LocalDate.of(2022,4,15),20, 15),
+            TurnstileCount.create(key, LocalDate.of(2022,4,15),4, 20),
+            TurnstileCount.create(key, LocalDate.of(2022,4,15),121, 78),
+            TurnstileCount.create(key, LocalDate.of(2022,4,15),1222, 466),
+            TurnstileCount.create(key, LocalDate.of(2022,4,15),533, 200),
+            TurnstileCount.create(key, LocalDate.of(2022,4,15),200, 211)
+    );
+
+    assertThat(byTurnstile.get(key)).containsExactly(expected.toArray(new TurnstileCount[]{}));
   }
 }
